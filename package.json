@@ -6,7 +6,7 @@
   "scripts": {
     "start": "electron .",
     "dev": "electron . --dev",
-    "build": "electron-packager . \"Shiba Clippy\" --platform=win32 --arch=x64 --out=dist --overwrite --ignore=dist --ignore=scripts"
+    "build": "electron-builder build --win --x64"
   },
   "author": "SolutionsKit LLC",
   "dependencies": {
@@ -17,5 +17,26 @@
     "electron": "^30.0.0",
     "electron-builder": "^24.0.0",
     "electron-packager": "^17.1.2"
+  },
+  "build": {
+    "appId": "com.solutionskit.shiba-clippy",
+    "productName": "Shiba Clippy",
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "package.json"
+    ]
   }
 }
