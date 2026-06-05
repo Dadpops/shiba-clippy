@@ -11,6 +11,20 @@ A cartoon Shiba Inu that lives on your desktop, powered by Claude AI. Set remind
 - 🌟 **Idle nudges** — Shiba pokes you if you've been quiet too long
 - 🖱️ **Draggable** — move it anywhere on screen
 
+## Quick Start
+
+```powershell
+git clone https://github.com/Dadpops/shiba-clippy.git
+cd shiba-clippy
+npm install
+$env:ANTHROPIC_API_KEY="sk-ant-your-key-here"
+npm start
+```
+
+Shiba appears in the **bottom-right corner**. Click to chat!
+
+---
+
 ## Setup
 
 ### 1. Prerequisites
