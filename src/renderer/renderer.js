@@ -6,7 +6,6 @@ const chatPanel      = document.getElementById('chat-panel');
 const messagesDiv    = document.getElementById('messages');
 const userInput      = document.getElementById('user-input');
 const sendBtn        = document.getElementById('send-btn');
-const closeChat      = document.getElementById('close-chat');
 const quickActions   = document.getElementById('quick-actions');
 const typingIndicator = document.getElementById('typing-indicator');
 
