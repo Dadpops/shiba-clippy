@@ -1,0 +1,16 @@
+{
+  "name": "shiba-clippy",
+  "version": "1.0.0",
+  "description": "A cartoon Shiba Inu desktop assistant powered by Claude AI",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "electron": "^30.0.0",
+    "node-notifier": "^10.0.1"
+  },
+  "devDependencies": {}
+}
