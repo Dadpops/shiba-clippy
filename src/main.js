@@ -135,20 +135,57 @@ ipcMain.handle('clear-history', () => {
 
 ipcMain.handle('get-reminders', () => reminders);
 
+function makeColorPNG(w, h, r, g, b) {
+  const zlib = require('zlib');
+  const CRC_TABLE = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) {
+    let c = n;
+    for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+    CRC_TABLE[n] = c;
+  }
+  function crc32(buf) {
+    let c = -1;
+    for (const byte of buf) c = (c >>> 8) ^ CRC_TABLE[(c ^ byte) & 0xff];
+    return (c ^ -1) >>> 0;
+  }
+  function chunk(type, data) {
+    const t = Buffer.from(type, 'ascii');
+    const len = Buffer.alloc(4);
+    len.writeUInt32BE(data.length, 0);
+    const crcBuf = Buffer.alloc(4);
+    crcBuf.writeUInt32BE(crc32(Buffer.concat([t, data])), 0);
+    return Buffer.concat([len, t, data, crcBuf]);
+  }
+  const raw = Buffer.alloc(h * (1 + w * 3));
+  for (let y = 0; y < h; y++) {
+    const base = y * (1 + w * 3);
+    raw[base] = 0;
+    for (let x = 0; x < w; x++) {
+      raw[base + 1 + x * 3] = r;
+      raw[base + 1 + x * 3 + 1] = g;
+      raw[base + 1 + x * 3 + 2] = b;
+    }
+  }
+  const ihdr = Buffer.alloc(13);
+  ihdr.writeUInt32BE(w, 0);
+  ihdr.writeUInt32BE(h, 4);
+  ihdr[8] = 8;
+  ihdr[9] = 2;
+  return Buffer.concat([
+    Buffer.from('89504e470d0a1a0a', 'hex'),
+    chunk('IHDR', ihdr),
+    chunk('IDAT', zlib.deflateSync(raw)),
+    chunk('IEND', Buffer.alloc(0)),
+  ]);
+}
+
 app.whenReady().then(() => {
   createWindow();
 
-  // Create a simple tray icon (1x1 transparent PNG as fallback)
   const fs = require('fs');
   const iconPath = path.join(__dirname, '..', 'assets', 'tray-icon.png');
   if (!fs.existsSync(iconPath)) {
-    // Create a minimal valid PNG (8x8 orange square)
-    const pngData = Buffer.from(
-      '89504e470d0a1a0a0000000d49484452000000080000000808020000004b6d29580000001849444154789c6360f8cf' +
-      'c0c0c0c8c0480100000000ffff03004b6d58780000000049454e44ae426082',
-      'hex'
-    );
-    fs.writeFileSync(iconPath, pngData);
+    fs.writeFileSync(iconPath, makeColorPNG(16, 16, 0xe6, 0x8a, 0x00));
   }
 
   createTray();
