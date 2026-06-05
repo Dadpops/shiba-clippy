@@ -5,12 +5,17 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron . --dev"
+    "dev": "electron . --dev",
+    "build": "electron-packager . \"Shiba Clippy\" --platform=win32 --arch=x64 --out=dist --overwrite --ignore=dist --ignore=scripts"
   },
+  "author": "SolutionsKit LLC",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.24.0",
-    "electron": "^30.0.0",
     "node-notifier": "^10.0.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "electron": "^30.0.0",
+    "electron-builder": "^24.0.0",
+    "electron-packager": "^17.1.2"
+  }
 }
