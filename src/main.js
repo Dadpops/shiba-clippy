@@ -253,6 +253,19 @@ function makeColorPNG(w, h, r, g, b) {
   ]);
 }
 
+// Prevent multiple instances
+if (!app.requestSingleInstanceLock()) {
+  app.quit();
+  process.exit(0);
+}
+
+app.on('second-instance', () => {
+  if (mainWindow) {
+    mainWindow.show();
+    mainWindow.focus();
+  }
+});
+
 app.whenReady().then(() => {
   createWindow();
 
