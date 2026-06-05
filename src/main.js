@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, Tray, Menu, screen } = require('electron');
+const { app, BrowserWindow, ipcMain, Tray, Menu, screen, shell } = require('electron');
 const path = require('path');
 const Anthropic = require('@anthropic-ai/sdk');
 
@@ -7,8 +7,8 @@ let tray;
 let conversationHistory = [];
 let reminders = [];
 
-// Initialize Anthropic client (reads from ANTHROPIC_API_KEY env var)
-const anthropic = new Anthropic();
+const hasApiKey = !!process.env.ANTHROPIC_API_KEY;
+const anthropic = hasApiKey ? new Anthropic() : null;
 
 function createWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
@@ -58,8 +58,83 @@ function createTray() {
   });
 }
 
+function handleLocalMessage(text) {
+  const lower = text.toLowerCase();
+
+  // REMINDERS: "remind me to X in N minutes/hours"
+  const rm = text.match(
+    /(?:remind(?:\s+me)?(?:\s+to)?|set\s+(?:a\s+)?reminder(?:\s+(?:to|for))?)\s+(.+?)\s+in\s+(\d+)\s*(minutes?|mins?|hours?|hrs?)/i
+  );
+  if (rm) {
+    const reminderText = rm[1].trim();
+    const amount = parseInt(rm[2]);
+    const unit = rm[3].toLowerCase();
+    const minutes = unit.startsWith('h') ? amount * 60 : amount;
+    const label = unit.startsWith('h')
+      ? `${amount} hour${amount !== 1 ? 's' : ''}`
+      : `${amount} minute${amount !== 1 ? 's' : ''}`;
+    scheduleReminder(reminderText, minutes);
+    reminders.push({ text: reminderText, minutes, set: new Date() });
+    return {
+      success: true,
+      message: `REMINDER:{"text":"${reminderText}","minutes":${minutes}}\nWoof! Reminder set for ${label}: "${reminderText}" ⏰ I'll bark at you when it's time!`,
+    };
+  }
+
+  // EMAIL DRAFTS
+  if (/(?:draft|compose|write|send)\s+(?:an?\s+)?email/i.test(lower)) {
+    const toMatch = text.match(/\bto\s+([^\s,]+@[^\s,]+)/i);
+    const aboutMatch = text.match(/\b(?:about|regarding|re:?)\s+(.+)/i);
+    const to = toMatch ? toMatch[1] : '';
+    const subject = aboutMatch ? aboutMatch[1].trim() : '';
+    const mailtoUrl = `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent('Hello,\n\n\n\nBest regards')}`;
+    shell.openExternal(mailtoUrl);
+    return {
+      success: true,
+      message: `Email draft ready — opening your mail client! ✉️\n\nTo: ${to || '(add recipient)'}\nSubject: ${subject || '(add subject)'}\nBody: Hello, ...\n\nTip: Add ANTHROPIC_API_KEY for AI-written emails! 🐾`,
+    };
+  }
+
+  // PRODUCTIVITY TIPS
+  if (/\b(?:tip|advice|productive|focus|hack)\b/i.test(lower)) {
+    const tips = [
+      "Try the Pomodoro technique: 25 min work, 5 min break. Much focus! 🍅",
+      "Tackle your hardest task first — peak energy = peak output. Very smart! 💪",
+      "Keep a short daily list: 3 must-dos, 3 nice-to-dos. Such simple! 📋",
+      "Turn off notifications during deep work. Distractions cost 20+ min to recover from! 🔕",
+      "2-minute rule: if it takes under 2 minutes, do it now. Wow efficiency! ⚡",
+      "End each day by writing tomorrow's top 3 priorities. Future-you says thank you! 🌙",
+      "Batch similar tasks — reply to all emails at once, not one by one. Much smart! 📬",
+      "Take real breaks — step outside, don't just switch tabs. Brain needs rest! 🌿",
+      "If stuck, set a 10-minute timer and just start. Starting is the hardest part! 🚀",
+    ];
+    return {
+      success: true,
+      message: tips[Math.floor(Math.random() * tips.length)],
+    };
+  }
+
+  // HELP
+  if (/\b(?:help|what can you|what do you|capabilities?)\b/i.test(lower)) {
+    return {
+      success: true,
+      message: `Woof! Running in offline mode. Here's what I can do:\n\n⏰ Reminders — "remind me to take a break in 25 minutes"\n✉️ Email drafts — "draft an email to boss@work.com about the meeting"\n💡 Productivity tips — "give me a tip"\n\nAdd ANTHROPIC_API_KEY to your environment and restart to unlock full AI chat! 🐾`,
+    };
+  }
+
+  // DEFAULT
+  return {
+    success: true,
+    message: `Woof! I'm in offline mode — no API key found.\n\nI can help with:\n⏰ Reminders — "remind me to X in N minutes"\n✉️ Email drafts — "draft email to X about Y"\n💡 Tips — "give me a tip"\n\nAdd ANTHROPIC_API_KEY to unlock full AI! 🐾`,
+  };
+}
+
 // Handle AI chat messages
 ipcMain.handle('send-message', async (event, userMessage) => {
+  if (!hasApiKey) {
+    return handleLocalMessage(userMessage);
+  }
+
   conversationHistory.push({ role: 'user', content: userMessage });
 
   const systemPrompt = `You are Shiba, an enthusiastic and helpful desktop assistant who looks like a cartoon Shiba Inu dog. You help users be more productive.
@@ -92,7 +167,6 @@ Current reminders set: ${JSON.stringify(reminders)}`;
     const assistantMessage = response.content[0].text;
     conversationHistory.push({ role: 'assistant', content: assistantMessage });
 
-    // Parse reminder commands from response
     const reminderMatch = assistantMessage.match(/REMINDER:(\{[^\n]+\})/);
     if (reminderMatch) {
       try {
@@ -104,7 +178,6 @@ Current reminders set: ${JSON.stringify(reminders)}`;
       }
     }
 
-    // Keep history manageable
     if (conversationHistory.length > 20) {
       conversationHistory = conversationHistory.slice(-16);
     }
@@ -134,6 +207,7 @@ ipcMain.handle('clear-history', () => {
 });
 
 ipcMain.handle('get-reminders', () => reminders);
+ipcMain.handle('get-mode', () => (hasApiKey ? 'ai' : 'offline'));
 
 function makeColorPNG(w, h, r, g, b) {
   const zlib = require('zlib');

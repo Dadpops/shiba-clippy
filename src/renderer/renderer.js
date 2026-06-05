@@ -13,6 +13,16 @@ const typingIndicator = document.getElementById('typing-indicator');
 let chatOpen = false;
 let bubbleTimeout = null;
 let isTyping = false;
+let appMode = 'ai';
+
+// Detect mode and update UI accordingly
+window.shibaAPI.getMode().then((mode) => {
+  appMode = mode;
+  if (mode === 'offline') {
+    document.querySelector('#chat-header span').textContent = '🐕 Shiba — Offline Mode';
+    userInput.placeholder = 'Set reminders, draft emails, get tips...';
+  }
+});
 
 // ── Greeting messages Shiba shows on startup ──
 const greetings = [
@@ -63,7 +73,11 @@ function openChat() {
 
   // Show a welcome message if chat is empty
   if (messagesDiv.children.length === 0) {
-    addMessage('assistant', "Woof! 🐾 I'm Shiba, your productivity pal!\n\nI can help you:\n• Draft emails ✉️\n• Set reminders ⏰\n• Answer questions 💡\n• Plan your tasks 📋\n\nWhat can I do for you?");
+    if (appMode === 'offline') {
+      addMessage('assistant', "Woof! 🐾 Running in offline mode — no API key found.\n\nI can still help with:\n⏰ Reminders — \"remind me to X in N minutes\"\n✉️ Email drafts — \"draft email to boss@work.com about Y\"\n💡 Tips — \"give me a tip\"\n\nAdd ANTHROPIC_API_KEY to unlock full AI chat! 🔑");
+    } else {
+      addMessage('assistant', "Woof! 🐾 I'm Shiba, your productivity pal!\n\nI can help you:\n• Draft emails ✉️\n• Set reminders ⏰\n• Answer questions 💡\n• Plan your tasks 📋\n\nWhat can I do for you?");
+    }
   }
 }
 
