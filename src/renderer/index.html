@@ -36,38 +36,22 @@
       display: none;
       animation: bubblePop 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-
     #bubble.visible { display: block; }
-
     #bubble::after {
       content: '';
       position: absolute;
-      bottom: -12px;
-      right: 28px;
+      bottom: -12px; right: 28px;
       width: 0; height: 0;
       border-left: 10px solid transparent;
       border-right: 4px solid transparent;
       border-top: 12px solid #fffdf7;
       filter: drop-shadow(0 2px 1px rgba(0,0,0,0.08));
     }
-
-    #bubble-text {
-      font-size: 13.5px;
-      line-height: 1.55;
-      color: #3a2e1e;
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-
+    #bubble-text { font-size: 13.5px; line-height: 1.55; color: #3a2e1e; white-space: pre-wrap; word-break: break-word; }
     .bubble-tag {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 800;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      padding: 2px 7px;
-      border-radius: 10px;
-      margin-bottom: 6px;
+      display: inline-block; font-size: 10px; font-weight: 800;
+      text-transform: uppercase; letter-spacing: 0.5px;
+      padding: 2px 7px; border-radius: 10px; margin-bottom: 6px;
     }
     .tag-reminder { background: #fff3cd; color: #856404; }
     .tag-email    { background: #d1e7ff; color: #084298; }
@@ -79,7 +63,7 @@
       border: 2.5px solid #e8a020;
       border-radius: 16px;
       width: 340px;
-      max-height: 340px;
+      max-height: 380px;
       margin-bottom: 6px;
       display: none;
       flex-direction: column;
@@ -95,198 +79,171 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-shrink: 0;
     }
-    #chat-header span {
-      font-size: 13px;
-      font-weight: 800;
-      color: white;
-      letter-spacing: 0.3px;
-    }
+    #chat-header span { font-size: 13px; font-weight: 800; color: white; letter-spacing: 0.3px; }
     #chat-header button {
-      background: rgba(255,255,255,0.25);
-      border: none;
-      color: white;
-      width: 22px; height: 22px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 13px;
-      display: flex; align-items: center; justify-content: center;
+      background: rgba(255,255,255,0.25); border: none; color: white;
+      width: 22px; height: 22px; border-radius: 50%; cursor: pointer;
+      font-size: 13px; display: flex; align-items: center; justify-content: center;
       transition: background 0.15s;
     }
     #chat-header button:hover { background: rgba(255,255,255,0.4); }
 
-    #messages {
-      flex: 1;
-      overflow-y: auto;
-      padding: 12px;
+    /* ─── Tab Bar ─── */
+    #tab-bar {
       display: flex;
-      flex-direction: column;
-      gap: 8px;
-      max-height: 220px;
+      background: #faf8f2;
+      border-bottom: 1.5px solid #f0e8d5;
+      flex-shrink: 0;
+    }
+    .tab-btn {
+      flex: 1; padding: 7px 4px; border: none; background: transparent;
+      font-family: 'Nunito', sans-serif; font-size: 11px; font-weight: 700;
+      color: #b8a890; cursor: pointer; transition: color 0.15s, background 0.15s;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-btn.active { color: #f97316; border-bottom-color: #f97316; }
+    .tab-btn:hover:not(.active) { background: #f5f0e8; color: #888; }
+    .badge {
+      background: #f97316; color: white; border-radius: 10px;
+      padding: 1px 5px; font-size: 9px; font-weight: 800; margin-left: 3px;
+    }
+
+    /* ─── Tab Panels ─── */
+    .tab-panel { display: none; flex: 1; flex-direction: column; overflow: hidden; min-height: 0; }
+    .tab-panel.active { display: flex; }
+
+    /* ─── Chat Tab ─── */
+    #messages {
+      flex: 1; overflow-y: auto; padding: 12px;
+      display: flex; flex-direction: column; gap: 8px;
+      max-height: 190px;
     }
     #messages::-webkit-scrollbar { width: 4px; }
     #messages::-webkit-scrollbar-track { background: transparent; }
     #messages::-webkit-scrollbar-thumb { background: #e8a020; border-radius: 2px; }
-
     .msg {
-      max-width: 85%;
-      padding: 8px 11px;
-      border-radius: 12px;
-      font-size: 12.5px;
-      line-height: 1.5;
-      white-space: pre-wrap;
-      word-break: break-word;
-      animation: fadeIn 0.2s ease-out;
+      max-width: 85%; padding: 8px 11px; border-radius: 12px;
+      font-size: 12.5px; line-height: 1.5; white-space: pre-wrap;
+      word-break: break-word; animation: fadeIn 0.2s ease-out;
     }
-    .msg.user {
-      align-self: flex-end;
-      background: linear-gradient(135deg, #f97316, #e8a020);
-      color: white;
-      border-radius: 12px 12px 2px 12px;
-    }
-    .msg.assistant {
-      align-self: flex-start;
-      background: #f3f0e8;
-      color: #3a2e1e;
-      border-radius: 2px 12px 12px 12px;
-    }
-    .msg.system {
-      align-self: center;
-      background: #fef3c7;
-      color: #92400e;
-      font-size: 11px;
-      border-radius: 8px;
-      padding: 4px 10px;
-    }
+    .msg.user { align-self: flex-end; background: linear-gradient(135deg, #f97316, #e8a020); color: white; border-radius: 12px 12px 2px 12px; }
+    .msg.assistant { align-self: flex-start; background: #f3f0e8; color: #3a2e1e; border-radius: 2px 12px 12px 12px; }
+    .msg.system { align-self: center; background: #fef3c7; color: #92400e; font-size: 11px; border-radius: 8px; padding: 4px 10px; }
 
-    #typing-indicator {
-      display: none;
-      align-self: flex-start;
-      padding: 8px 12px;
-      background: #f3f0e8;
-      border-radius: 2px 12px 12px 12px;
-    }
+    #typing-indicator { display: none; align-self: flex-start; padding: 8px 12px; background: #f3f0e8; border-radius: 2px 12px 12px 12px; }
     #typing-indicator.visible { display: flex; gap: 4px; align-items: center; }
-    .dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: #e8a020;
-      animation: bounce 1.2s infinite;
-    }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: #e8a020; animation: bounce 1.2s infinite; }
     .dot:nth-child(2) { animation-delay: 0.2s; }
     .dot:nth-child(3) { animation-delay: 0.4s; }
 
-    #input-row {
-      padding: 10px 12px;
-      border-top: 1.5px solid #f0e8d5;
-      display: flex;
-      gap: 8px;
-      align-items: flex-end;
-    }
+    #input-row { padding: 10px 12px; border-top: 1.5px solid #f0e8d5; display: flex; gap: 8px; align-items: flex-end; flex-shrink: 0; }
     #user-input {
-      flex: 1;
-      border: 1.5px solid #e8c878;
-      border-radius: 10px;
-      padding: 7px 10px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 13px;
-      resize: none;
-      outline: none;
-      background: #fffdf7;
-      color: #3a2e1e;
-      max-height: 80px;
-      min-height: 34px;
+      flex: 1; border: 1.5px solid #e8c878; border-radius: 10px; padding: 7px 10px;
+      font-family: 'Nunito', sans-serif; font-size: 13px; resize: none; outline: none;
+      background: #fffdf7; color: #3a2e1e; max-height: 80px; min-height: 34px;
       transition: border-color 0.15s;
     }
     #user-input:focus { border-color: #f97316; }
     #user-input::placeholder { color: #b8a890; }
-
     #send-btn {
-      width: 34px; height: 34px;
-      border-radius: 10px;
-      border: none;
-      background: linear-gradient(135deg, #f97316, #e8a020);
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: transform 0.1s, opacity 0.1s;
-      flex-shrink: 0;
+      width: 34px; height: 34px; border-radius: 10px; border: none;
+      background: linear-gradient(135deg, #f97316, #e8a020); color: white;
+      font-size: 16px; cursor: pointer; transition: transform 0.1s, opacity 0.1s; flex-shrink: 0;
     }
     #send-btn:hover { transform: scale(1.08); }
     #send-btn:active { transform: scale(0.95); opacity: 0.85; }
 
+    /* ─── Reminders Tab ─── */
+    #reminders-list {
+      flex: 1; overflow-y: auto; padding: 12px;
+      display: flex; flex-direction: column; gap: 8px;
+    }
+    #reminders-list::-webkit-scrollbar { width: 4px; }
+    #reminders-list::-webkit-scrollbar-thumb { background: #e8a020; border-radius: 2px; }
+    #no-reminders { text-align: center; color: #b8a890; font-size: 13px; padding: 30px 12px; }
+    .reminder-item {
+      background: #fef3c7; border: 1.5px solid #fbbf24; border-radius: 10px;
+      padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;
+    }
+    .reminder-item-text { font-size: 12.5px; color: #92400e; font-weight: 600; }
+    .reminder-item-time { font-size: 11px; color: #b45309; margin-top: 2px; }
+    .reminder-cancel-btn {
+      background: none; border: none; color: #b45309; cursor: pointer;
+      font-size: 14px; padding: 4px 6px; border-radius: 6px;
+      transition: background 0.1s; flex-shrink: 0;
+    }
+    .reminder-cancel-btn:hover { background: #fde68a; }
+
+    /* ─── Settings Tab ─── */
+    #settings-panel-content {
+      padding: 14px 16px; display: flex; flex-direction: column;
+      gap: 14px; overflow-y: auto; flex: 1;
+    }
+    .setting-group { display: flex; flex-direction: column; gap: 5px; }
+    .setting-label { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: #999; }
+    .setting-input {
+      border: 1.5px solid #e8c878; border-radius: 8px; padding: 8px 10px;
+      font-family: 'Nunito', sans-serif; font-size: 12.5px; outline: none;
+      background: #fffdf7; color: #3a2e1e; width: 100%; transition: border-color 0.15s;
+    }
+    .setting-input:focus { border-color: #f97316; }
+    .setting-toggle-row { display: flex; align-items: center; justify-content: space-between; }
+    .setting-toggle-label { font-size: 13px; color: #3a2e1e; font-weight: 600; }
+    .toggle { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
+    .toggle input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider {
+      position: absolute; inset: 0; background: #d0ccc4;
+      border-radius: 22px; transition: background 0.2s; cursor: pointer;
+    }
+    .toggle-slider::before {
+      content: ''; position: absolute; width: 16px; height: 16px;
+      left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s;
+    }
+    .toggle input:checked + .toggle-slider { background: #f97316; }
+    .toggle input:checked + .toggle-slider::before { transform: translateX(16px); }
+    .save-btn {
+      background: linear-gradient(135deg, #f97316, #e8a020); border: none;
+      border-radius: 10px; color: white; font-family: 'Nunito', sans-serif;
+      font-size: 13px; font-weight: 800; padding: 10px; cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+    }
+    .save-btn:hover { opacity: 0.9; }
+    .save-btn:active { transform: scale(0.98); }
+    #save-status { text-align: center; font-size: 12px; font-weight: 700; color: #059669; min-height: 18px; }
+
     /* ─── Shiba Character ─── */
     #shiba-container {
-      width: 120px;
-      height: 120px;
-      position: relative;
-      cursor: pointer;
+      width: 120px; height: 120px; position: relative; cursor: pointer;
       filter: drop-shadow(0 6px 16px rgba(0,0,0,0.2));
       transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
     #shiba-container:hover { transform: scale(1.06) translateY(-2px); }
     #shiba-container:active { transform: scale(0.97); }
-
-    #shiba-container.bounce {
-      animation: shibaBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    #shiba-container.excited {
-      animation: shibaExcited 0.8s ease-in-out;
-    }
+    #shiba-container.bounce { animation: shibaBounce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    #shiba-container.excited { animation: shibaExcited 0.8s ease-in-out; }
 
     /* ─── Quick Actions ─── */
     #quick-actions {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 6px;
-      opacity: 0;
-      transform: translateY(8px);
-      transition: opacity 0.2s, transform 0.2s;
-      pointer-events: none;
+      display: flex; gap: 6px; margin-bottom: 6px;
+      opacity: 0; transform: translateY(8px);
+      transition: opacity 0.2s, transform 0.2s; pointer-events: none;
     }
-    #quick-actions.visible {
-      opacity: 1;
-      transform: translateY(0);
-      pointer-events: all;
-    }
+    #quick-actions.visible { opacity: 1; transform: translateY(0); pointer-events: all; }
     .quick-btn {
-      background: rgba(255,253,247,0.95);
-      border: 2px solid #e8a020;
-      border-radius: 20px;
-      padding: 5px 12px;
-      font-family: 'Nunito', sans-serif;
-      font-size: 12px;
-      font-weight: 700;
-      color: #c2540a;
-      cursor: pointer;
-      transition: all 0.15s;
-      white-space: nowrap;
+      background: rgba(255,253,247,0.95); border: 2px solid #e8a020; border-radius: 20px;
+      padding: 5px 12px; font-family: 'Nunito', sans-serif; font-size: 12px; font-weight: 700;
+      color: #c2540a; cursor: pointer; transition: all 0.15s; white-space: nowrap;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
-    .quick-btn:hover {
-      background: #f97316;
-      color: white;
-      border-color: #f97316;
-      transform: translateY(-1px);
-    }
+    .quick-btn:hover { background: #f97316; color: white; border-color: #f97316; transform: translateY(-1px); }
 
     /* ─── Animations ─── */
-    @keyframes bubblePop {
-      from { transform: scale(0.8); opacity: 0; }
-      to   { transform: scale(1);   opacity: 1; }
-    }
-    @keyframes slideUp {
-      from { transform: translateY(12px); opacity: 0; }
-      to   { transform: translateY(0);    opacity: 1; }
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(4px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-    @keyframes bounce {
-      0%, 80%, 100% { transform: translateY(0); }
-      40%           { transform: translateY(-6px); }
-    }
+    @keyframes bubblePop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    @keyframes slideUp { from { transform: translateY(12px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes bounce { 0%, 80%, 100% { transform: translateY(0); } 40% { transform: translateY(-6px); } }
     @keyframes shibaBounce {
       0%   { transform: translateY(0); }
       30%  { transform: translateY(-16px) rotate(-5deg); }
@@ -302,10 +259,7 @@
       75%  { transform: rotate(-2deg) scale(1.02); }
       100% { transform: rotate(0deg) scale(1); }
     }
-    @keyframes float {
-      0%, 100% { transform: translateY(0px); }
-      50%       { transform: translateY(-5px); }
-    }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-5px); } }
     #shiba-svg { animation: float 3s ease-in-out infinite; }
   </style>
 </head>
@@ -323,22 +277,60 @@
       <span>🐕 Shiba Assistant</span>
       <button id="close-chat" title="Close">✕</button>
     </div>
-    <div id="messages"></div>
-    <div id="typing-indicator">
-      <div class="dot"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
+
+    <!-- Tab Bar -->
+    <div id="tab-bar">
+      <button class="tab-btn active" data-tab="chat">💬 Chat</button>
+      <button class="tab-btn" data-tab="reminders" id="reminders-tab-btn">⏰ Reminders</button>
+      <button class="tab-btn" data-tab="settings">⚙️ Settings</button>
     </div>
-    <div id="input-row">
-      <textarea id="user-input" rows="1" placeholder="Ask Shiba anything..."></textarea>
-      <button id="send-btn" title="Send">➤</button>
+
+    <!-- Chat Tab -->
+    <div class="tab-panel active" id="tab-chat">
+      <div id="messages"></div>
+      <div id="typing-indicator">
+        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+      </div>
+      <div id="input-row">
+        <textarea id="user-input" rows="1" placeholder="Ask Shiba anything..."></textarea>
+        <button id="send-btn" title="Send">➤</button>
+      </div>
+    </div>
+
+    <!-- Reminders Tab -->
+    <div class="tab-panel" id="tab-reminders">
+      <div id="reminders-list">
+        <div id="no-reminders">No active reminders 🐾<br><small style="color:#d0c8b8">Set one by typing in Chat!</small></div>
+      </div>
+    </div>
+
+    <!-- Settings Tab -->
+    <div class="tab-panel" id="tab-settings">
+      <div id="settings-panel-content">
+        <div class="setting-group">
+          <div class="setting-label">Anthropic API Key</div>
+          <input type="password" class="setting-input" id="api-key-input" placeholder="sk-ant-..." autocomplete="off" />
+          <small style="color:#b8a890;font-size:11px">Get yours at console.anthropic.com</small>
+        </div>
+        <div class="setting-group">
+          <div class="setting-toggle-row">
+            <span class="setting-toggle-label">Launch on startup</span>
+            <label class="toggle">
+              <input type="checkbox" id="auto-launch-toggle" />
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+        <button class="save-btn" id="save-settings-btn">Save Settings</button>
+        <div id="save-status"></div>
+      </div>
     </div>
   </div>
 
   <!-- Quick Actions -->
   <div id="quick-actions">
     <button class="quick-btn" data-prompt="Draft me a professional email for ">✉️ Email</button>
-    <button class="quick-btn" data-prompt="Set a reminder for me: ">⏰ Reminder</button>
+    <button class="quick-btn" data-prompt="Set a reminder for me: ">⏰ Remind</button>
     <button class="quick-btn" data-prompt="Give me a quick productivity tip">💡 Tip</button>
   </div>
 
@@ -346,61 +338,56 @@
   <div id="shiba-container" title="Click to chat with Shiba!">
     <svg id="shiba-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" width="120" height="120">
       <!-- Body -->
-      <ellipse cx="60" cy="82" rx="32" ry="26" fill="#e8963a"/>
-      <!-- Belly -->
-      <ellipse cx="60" cy="88" rx="18" ry="16" fill="#f5d08a"/>
-
+      <ellipse cx="60" cy="88" rx="33" ry="26" fill="#f0ede8"/>
+      <ellipse cx="60" cy="91" rx="26" ry="20" fill="#e8e4de" opacity="0.4"/>
+      <!-- Belly patch -->
+      <ellipse cx="60" cy="95" rx="19" ry="17" fill="#faf9f7"/>
       <!-- Tail -->
-      <path d="M88 72 Q108 52 98 40 Q92 34 86 44 Q82 55 88 72Z" fill="#e8963a"/>
-      <path d="M88 72 Q104 55 96 44 Q93 38 88 46 Q85 56 88 72Z" fill="#f5a84a" opacity="0.5"/>
-
+      <path d="M88 76 Q106 58 100 44 Q95 34 87 42 Q82 52 88 76Z" fill="#ece9e4"/>
+      <path d="M88 76 Q103 60 98 46 Q94 37 88 44 Q84 54 88 76Z" fill="#d8d4ce" opacity="0.4"/>
       <!-- Hind legs -->
-      <ellipse cx="40" cy="100" rx="10" ry="7" fill="#d47830"/>
-      <ellipse cx="80" cy="100" rx="10" ry="7" fill="#d47830"/>
-      <!-- Paws -->
-      <ellipse cx="40" cy="106" rx="9" ry="5" fill="#f5d08a"/>
-      <ellipse cx="80" cy="106" rx="9" ry="5" fill="#f5d08a"/>
-
+      <ellipse cx="40" cy="104" rx="11" ry="7" fill="#dedad4"/>
+      <ellipse cx="80" cy="104" rx="11" ry="7" fill="#dedad4"/>
+      <ellipse cx="40" cy="110" rx="10" ry="5.5" fill="#faf9f7"/>
+      <ellipse cx="80" cy="110" rx="10" ry="5.5" fill="#faf9f7"/>
       <!-- Head -->
-      <ellipse cx="60" cy="52" rx="28" ry="26" fill="#e8963a"/>
-
+      <ellipse cx="60" cy="52" rx="30" ry="28" fill="#f0ede8"/>
+      <!-- Cheek fluffs -->
+      <ellipse cx="36" cy="58" rx="11" ry="8" fill="#ece9e4" opacity="0.7"/>
+      <ellipse cx="84" cy="58" rx="11" ry="8" fill="#ece9e4" opacity="0.7"/>
+      <ellipse cx="36" cy="60" rx="8" ry="5" fill="#f0a090" opacity="0.2"/>
+      <ellipse cx="84" cy="60" rx="8" ry="5" fill="#f0a090" opacity="0.2"/>
       <!-- Ears -->
-      <polygon points="36,34 28,12 46,26" fill="#e8963a"/>
-      <polygon points="84,34 92,12 74,26" fill="#e8963a"/>
-      <!-- Inner ears -->
-      <polygon points="37,32 31,17 45,27" fill="#e84040" opacity="0.7"/>
-      <polygon points="83,32 89,17 75,27" fill="#e84040" opacity="0.7"/>
-
-      <!-- Face - cheeks -->
-      <ellipse cx="42" cy="58" rx="9" ry="6" fill="#f5a080" opacity="0.5"/>
-      <ellipse cx="78" cy="58" rx="9" ry="6" fill="#f5a080" opacity="0.5"/>
-
+      <path d="M34,38 Q28,18 36,8 Q44,0 52,10 Q58,20 54,36 Z" fill="#ece9e4"/>
+      <path d="M36,36 Q31,20 37,12 Q43,5 50,13 Q55,21 52,35 Z" fill="#e8b4b0" opacity="0.55"/>
+      <path d="M86,38 Q92,18 84,8 Q76,0 68,10 Q62,20 66,36 Z" fill="#ece9e4"/>
+      <path d="M84,36 Q89,20 83,12 Q77,5 70,13 Q65,21 68,35 Z" fill="#e8b4b0" opacity="0.55"/>
       <!-- Eyes -->
-      <ellipse id="eye-left"  cx="50" cy="50" rx="7" ry="7.5" fill="#2a1a08"/>
-      <ellipse id="eye-right" cx="70" cy="50" rx="7" ry="7.5" fill="#2a1a08"/>
-      <!-- Eye shine -->
-      <circle cx="52.5" cy="47.5" r="2.5" fill="white"/>
-      <circle cx="72.5" cy="47.5" r="2.5" fill="white"/>
-      <!-- Small shine -->
-      <circle cx="54.5" cy="51.5" r="1" fill="white"/>
-      <circle cx="74.5" cy="51.5" r="1" fill="white"/>
-
-      <!-- Nose -->
-      <ellipse cx="60" cy="60" rx="6" ry="4.5" fill="#2a1a08"/>
-      <ellipse cx="59" cy="59" rx="2" ry="1.5" fill="white" opacity="0.4"/>
-
+      <ellipse cx="47" cy="50" rx="8" ry="9" fill="#1a1410"/>
+      <ellipse cx="49" cy="50" rx="5.5" ry="6.5" fill="#3d2c1c"/>
+      <ellipse cx="51" cy="50" rx="3" ry="3.8" fill="#0d0a06"/>
+      <circle cx="53" cy="46.5" r="2.5" fill="white"/>
+      <circle cx="54.5" cy="50" r="1.1" fill="white" opacity="0.55"/>
+      <ellipse cx="73" cy="50" rx="8" ry="9" fill="#1a1410"/>
+      <ellipse cx="75" cy="50" rx="5.5" ry="6.5" fill="#3d2c1c"/>
+      <ellipse cx="77" cy="50" rx="3" ry="3.8" fill="#0d0a06"/>
+      <circle cx="79" cy="46.5" r="2.5" fill="white"/>
+      <circle cx="80.5" cy="50" r="1.1" fill="white" opacity="0.55"/>
+      <!-- Eyebrows -->
+      <path d="M40 40 Q47 37 54 39" stroke="#c0bab2" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <path d="M66 39 Q73 37 80 40" stroke="#c0bab2" stroke-width="1.2" fill="none" stroke-linecap="round"/>
+      <!-- Snout -->
+      <ellipse cx="60" cy="63" rx="14" ry="11" fill="#e8e4de"/>
+      <ellipse cx="60" cy="58" rx="6" ry="4" fill="#1a1410"/>
+      <ellipse cx="58.5" cy="56.5" r="1.8" fill="white" opacity="0.3"/>
       <!-- Mouth -->
-      <path d="M54 65 Q60 70 66 65" stroke="#2a1a08" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-      <path d="M60 65 L60 69" stroke="#2a1a08" stroke-width="1.5" fill="none" stroke-linecap="round"/>
-
-      <!-- Forehead marking -->
-      <path d="M55 38 Q60 34 65 38 Q62 42 58 42 Z" fill="#c87020" opacity="0.4"/>
-
+      <path d="M54 67 Q60 72 66 67" stroke="#1a1410" stroke-width="1.5" fill="none" stroke-linecap="round"/>
+      <path d="M60 67 L60 70" stroke="#1a1410" stroke-width="1.3" fill="none" stroke-linecap="round"/>
       <!-- Front paws -->
-      <ellipse cx="46" cy="97" rx="8" ry="5" fill="#d47830"/>
-      <ellipse cx="74" cy="97" rx="8" ry="5" fill="#d47830"/>
-      <ellipse cx="46" cy="100" rx="7" ry="4" fill="#f5d08a"/>
-      <ellipse cx="74" cy="100" rx="7" ry="4" fill="#f5d08a"/>
+      <ellipse cx="46" cy="101" rx="9" ry="6" fill="#dedad4"/>
+      <ellipse cx="74" cy="101" rx="9" ry="6" fill="#dedad4"/>
+      <ellipse cx="46" cy="106" rx="8" ry="4.5" fill="#faf9f7"/>
+      <ellipse cx="74" cy="106" rx="8" ry="4.5" fill="#faf9f7"/>
     </svg>
   </div>
 
